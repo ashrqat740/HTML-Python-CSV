@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Student Grade Management System</title>
+        <style>
+            :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.6rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .error-msg {
+            color: var(--error);
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            display: none;
+            margin-top: 15px;
+        }
+
+        .result-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .result-card.active {
+            display: block;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Student portal</h1>
+            <p class="subtitle">Search student grades by Id or Name</p>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Enter Id or Name">
+                <button onclick="searchStudent()">Search</button>
+            </div>
+
+            <div id="errorMsg" class="error-msg">No student found matching your search</div>
+
+            <div id="resultCard" class="result-card">
+                <div class="result-row">
+                    <span class="result-label">Student Name: </span>
+                    <span class="result-value" id="resName"></span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Roll No / ID:</span>
+                    <span class="result-value" id="resID"></span>
+                </div>
+            <div class="result-row">
+                <span class="result-label">Total Score:</span>
+                <span class="result-value" id="resTotal"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Student Code:</span>
+                <span class="result-value" id="resCode"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Grade:</span>
+                <span class="result-value" id="resGrade"></span>
+            </div>
+            </div>
+        </div>
+
+        <script>
+            const studentsData = [
+                {id: "1001", name: "adham", total: "84", code: "1001", grade: "Good"},
+                {id: "1002", name: "ahmed", total: "75", code: "1002", grade: "Good"},
+                {id: "1003", name: "aseel", total: "90", code: "1003", grade: "Excellent"},
+                {id: "1004", name: "hisham", total: "68", code: "1004", grade: "Pass"},
+                {id: "1005", name: "ibrahim", total: "98", code: "1005", grade: "Excellent"},
+                {id: "1006", name: "shrouk", total: "62", code: "1006", grade: "Pass"},
+                {id: "1007", name: "yara", total: "40", code: "1007", grade: "Fail"},
+                {id: "1008", name: "yasser", total: "45", code: "1008", grade: "Fail"},
+                {id: "1009", name: "yasmeen", total: "87", code: "1009", grade: "Good"},
+                {id: "1010", name: "ziad", total: "79", code: "1010", grade: "Good"},
+            ];
+            
+                function searchStudent(){
+                    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+                    const found = studentsData.find(student => 
+                    student.name.toLowerCase().includes(query) || student.id === query
+    );
+
+    if (found) {
+        document.getElementById('resName').textContent = found.name;
+        document.getElementById('resID').textContent = found.id;
+        document.getElementById('resTotal').textContent = found.total;
+        document.getElementById('resCode').textContent = found.code;
+        document.getElementById('resGrade').textContent = found.grade;
+
+        document.getElementById('resultCard').classList.add('active');
+        document.getElementById('errorMsg').style.display = 'none';
+    } else {
+        document.getElementById('resultCard').classList.remove('active');
+        document.getElementById('errorMsg').style.display = 'block';
+    }
+}
+
+        </script>
+
+
+    </body>
+</html>
