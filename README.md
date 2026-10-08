@@ -1,1 +1,1 @@
-Student Grades
+Students Grades
